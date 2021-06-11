@@ -27,20 +27,25 @@ public class JavaController {
   private static final String CONTENT_DISPOSITION_VALUE = "form-data; name=\"attachment\"; filename=\"%s\"";
 
   @GetMapping("/api")
-  public ResponseEntity<SomeRandomObject> get(@RequestParam(required = false) Map<String, String> params,
-      @RequestHeader Map<String, String> headers) {
-    System.out.println(params);
-    System.out.println(headers);
+  public ResponseEntity<SomeRandomObject> get(
+      @RequestHeader Map<String, String> headers,
+      @RequestParam(required = false) Map<String, String> params) {
+    System.out.println("\nGet : ");
+    System.out.println("params : " + params);
+    System.out.println("headers : " + headers);
     return new ResponseEntity<SomeRandomObject>(
         SomeRandomObject.builder().headers(headers).params(params).build(), HttpStatus.OK);
   }
 
   @PostMapping("/api")
-  public ResponseEntity<SomeRandomObject> post(@RequestParam(required = false) Map<String, String> params,
-      @RequestHeader Map<String, String> headers, @RequestBody(required = false) Object body) {
-    System.out.println(params);
-    System.out.println(headers);
-    System.out.println(body);
+  public ResponseEntity<SomeRandomObject> post(
+      @RequestHeader Map<String, String> headers,
+      @RequestParam(required = false) Map<String, String> params,
+      @RequestBody(required = false) Object body) {
+    System.out.println("\nPost : ");
+    System.out.println("params : " + params);
+    System.out.println("headers : " + headers);
+    System.out.println("body : " + body);
     return new ResponseEntity<SomeRandomObject>(
         SomeRandomObject.builder().headers(headers).params(params).body(body).build(), HttpStatus.OK);
   }
@@ -51,7 +56,7 @@ public class JavaController {
       @RequestParam(required = false) Map<String, String> params,
       @RequestParam Map<String, MultipartFile> files,
       @RequestParam(value = "DocumentUpload", required = false) MultipartFile documentUpload) {
-    System.out.println("\nUpload Endpoint Reached: ");
+    System.out.println("\nUpload : ");
     System.out.println("params : " + params);
     System.out.println("headers : " + headers);
     System.out.println("DocumentUpload : " + documentUpload);
@@ -89,11 +94,12 @@ public class JavaController {
 
 
   @GetMapping(path = "download", produces = MULTIPART_FORM_DATA_VALUE)
-  public ResponseEntity<Resource> downloadAttachment(@RequestParam(required = false) Map<String, String> params,
-      @RequestHeader Map<String, String> headers) {
-    System.out.println(params);
-    System.out.println(headers);
-
+  public ResponseEntity<Resource> downloadAttachment(
+      @RequestHeader Map<String, String> headers,
+      @RequestParam(required = false) Map<String, String> params) {
+    System.out.println("\nDownload : ");
+    System.out.println("params : " + params);
+    System.out.println("headers : " + headers);
     Resource resource = null;
     try {
       var output = new File(new File("").getAbsolutePath() + "/fileToDownload.txt");
