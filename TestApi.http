@@ -1,0 +1,30 @@
+GET http://localhost:8888/api?itemId=99
+
+###
+
+
+POST http://localhost:8888/api
+Content-Type: application/json
+
+{
+  "name": "test",
+  "id": 199
+}
+
+###
+
+
+POST http://localhost:8888/upload
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+
+--WebAppBoundary
+Content-Disposition: form-data; name="DocumentUpload"; filename="fileToUpload.txt"
+
+< fileToUpload.txt
+--WebAppBoundary--
+
+###
+
+GET http://localhost:8888/download
+
+###
