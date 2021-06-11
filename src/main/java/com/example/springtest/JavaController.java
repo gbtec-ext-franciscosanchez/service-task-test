@@ -47,19 +47,19 @@ public class JavaController {
 
   @PostMapping(path = "upload", consumes = MULTIPART_FORM_DATA_VALUE)
   public ResponseEntity<SomeRandomObject> uploadAttachment(
-      @RequestParam(required = false) Map<String, String> params,
       @RequestHeader Map<String, String> headers,
+      @RequestParam(required = false) Map<String, String> params,
       @RequestParam Map<String, MultipartFile> files,
       @RequestParam(value = "DocumentUpload", required = false) MultipartFile documentUpload) {
+    System.out.println("\nUpload Endpoint Reached: ");
     System.out.println("params : " + params);
     System.out.println("headers : " + headers);
-    System.out.println("files : " + files);
+    System.out.println("DocumentUpload : " + documentUpload);
     System.out.println("files.size() : " + files.size());
-    System.out.println("documentUpload : " + documentUpload);
+    System.out.println("files : " + files);
 
     files.forEach((key, file) -> {
-      System.out.println();
-      System.out.println("key : " + key);
+      System.out.println("\nkey : " + key);
       System.out.println("file.getOriginalFilename() : " + file.getOriginalFilename());
       System.out.println("file.getName() : " + file.getName());
       System.out.println("file.getSize() : " + file.getSize());
@@ -69,7 +69,7 @@ public class JavaController {
         var output = new File(
             new File("").getAbsolutePath() + "/uploads/" + time + "-" + file.getOriginalFilename());
         file.transferTo(output);
-        System.out.println("File saved: " + output.getAbsolutePath());
+        System.out.println("\nFILE SAVED : " + output.getAbsolutePath());
       } catch (Exception ex) {
         ex.printStackTrace();
       }
