@@ -82,8 +82,7 @@ public class JavaController {
             .params(params)
             .filenames(files.values()
                 .stream()
-                .map(
-                    MultipartFile::getOriginalFilename)
+                .map(MultipartFile::getOriginalFilename)
                 .toArray(String[]::new))
             .build(), HttpStatus.OK);
   }
