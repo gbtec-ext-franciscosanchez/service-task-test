@@ -1,11 +1,12 @@
 package com.example.springtest;
 
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
-import static org.springframework.http.MediaType.parseMediaType;
 import static org.springframework.http.ResponseEntity.ok;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Map;
 import org.springframework.core.io.ByteArrayResource;
@@ -24,7 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class JavaController {
 
   private static final String CONTENT_DISPOSITION_LABEL = "Content-Disposition";
-  private static final String CONTENT_DISPOSITION_VALUE = "form-data; name=\"attachment\"; filename=\"%s\"";
+  private static final String CONTENT_DISPOSITION_VALUE = "form-data; name=\"%s\"; filename=\"%s\"";
 
   @GetMapping("/api")
   public ResponseEntity<SomeRandomObject> get(
@@ -109,8 +110,34 @@ public class JavaController {
     } catch (Exception e) {
       e.printStackTrace();
     }
-    return ok().header(CONTENT_DISPOSITION_LABEL, String.format(CONTENT_DISPOSITION_VALUE, "fileToDownload.txt"))
-        .contentType(parseMediaType("text/plain"))
+    return ok()
+        .header(CONTENT_DISPOSITION_LABEL, String.format(CONTENT_DISPOSITION_VALUE, "attachment", "fileToDownload.txt"))
+        .body(resource);
+  }
+
+
+  @PostMapping(path = "transform", consumes = MULTIPART_FORM_DATA_VALUE, produces = MULTIPART_FORM_DATA_VALUE)
+  public ResponseEntity<Resource> transformAttachment(
+      @RequestHeader Map<String, String> headers,
+      @RequestParam(required = false) Map<String, String> params,
+      @RequestParam(value = "DocumentUpload") MultipartFile documentUpload) {
+    System.out.println("\nUpload : ");
+    System.out.println("params : " + params);
+    System.out.println("headers : " + headers);
+    System.out.println("DocumentUpload : " + documentUpload);
+
+    ByteArrayResource resource = null;
+    try {
+      ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      outputStream.write(documentUpload.getBytes());
+      outputStream.write(String.format("\n%s", LocalDateTime.now()).getBytes());
+      outputStream.flush();
+      resource = new ByteArrayResource(outputStream.toByteArray());
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return ok()
+        .header(CONTENT_DISPOSITION_LABEL, String.format(CONTENT_DISPOSITION_VALUE, "attachment", "fileToDownload.txt"))
         .body(resource);
   }
 }

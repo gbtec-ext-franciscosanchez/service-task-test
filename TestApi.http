@@ -28,3 +28,15 @@ Content-Disposition: form-data; name="DocumentUpload"; filename="fileToUpload.tx
 GET http://localhost:8888/download
 
 ###
+
+
+POST http://localhost:8888/transform
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+
+--WebAppBoundary
+Content-Disposition: form-data; name="DocumentUpload"; filename="fileToUpload.txt"
+
+< fileToUpload.txt
+--WebAppBoundary--
+
+###
