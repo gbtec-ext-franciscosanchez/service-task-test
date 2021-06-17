@@ -51,7 +51,7 @@ public class JavaController {
         SomeRandomObject.builder().headers(headers).params(params).body(body).build(), HttpStatus.OK);
   }
 
-  @PostMapping(path = "upload", consumes = MULTIPART_FORM_DATA_VALUE)
+  @PostMapping(path = "/upload", consumes = MULTIPART_FORM_DATA_VALUE)
   public ResponseEntity<SomeRandomObject> uploadAttachment(
       @RequestHeader Map<String, String> headers,
       @RequestParam(required = false) Map<String, String> params,
@@ -94,7 +94,7 @@ public class JavaController {
   }
 
 
-  @GetMapping(path = "download", produces = MULTIPART_FORM_DATA_VALUE)
+  @GetMapping(path = "/download", produces = MULTIPART_FORM_DATA_VALUE)
   public ResponseEntity<Resource> downloadAttachment(
       @RequestHeader Map<String, String> headers,
       @RequestParam(required = false) Map<String, String> params) {
@@ -116,7 +116,7 @@ public class JavaController {
   }
 
 
-  @PostMapping(path = "transform", consumes = MULTIPART_FORM_DATA_VALUE, produces = MULTIPART_FORM_DATA_VALUE)
+  @PostMapping(path = "/transform", consumes = MULTIPART_FORM_DATA_VALUE, produces = MULTIPART_FORM_DATA_VALUE)
   public ResponseEntity<Resource> transformAttachment(
       @RequestHeader Map<String, String> headers,
       @RequestParam(required = false) Map<String, String> params,
