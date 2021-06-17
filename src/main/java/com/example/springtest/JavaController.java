@@ -8,6 +8,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
@@ -27,6 +29,8 @@ public class JavaController {
   private static final String CONTENT_DISPOSITION_LABEL = "Content-Disposition";
   private static final String CONTENT_DISPOSITION_VALUE = "form-data; name=\"%s\"; filename=\"%s\"";
 
+  private final List<ResponseEntity<?>> responses = new ArrayList<ResponseEntity<?>>();
+
   @GetMapping("/api")
   public ResponseEntity<SomeRandomObject> get(
       @RequestHeader Map<String, String> headers,
@@ -34,8 +38,11 @@ public class JavaController {
     System.out.println("\nGet : ");
     System.out.println("params : " + params);
     System.out.println("headers : " + headers);
-    return new ResponseEntity<SomeRandomObject>(
-        SomeRandomObject.builder().headers(headers).params(params).build(), HttpStatus.OK);
+    ResponseEntity<SomeRandomObject> response = new ResponseEntity<>(
+        SomeRandomObject.builder()
+            .timestamp(LocalDateTime.now().toString()).headers(headers).params(params).build(), HttpStatus.OK);
+    responses.add(response);
+    return response;
   }
 
   @PostMapping("/api")
@@ -47,8 +54,12 @@ public class JavaController {
     System.out.println("params : " + params);
     System.out.println("headers : " + headers);
     System.out.println("body : " + body);
-    return new ResponseEntity<SomeRandomObject>(
-        SomeRandomObject.builder().headers(headers).params(params).body(body).build(), HttpStatus.OK);
+    ResponseEntity<SomeRandomObject> response = new ResponseEntity<>(
+        SomeRandomObject.builder()
+            .timestamp(LocalDateTime.now().toString()).headers(headers).params(params).body(body).build(),
+        HttpStatus.OK);
+    responses.add(response);
+    return response;
   }
 
   @PostMapping(path = "/upload", consumes = MULTIPART_FORM_DATA_VALUE)
@@ -82,8 +93,9 @@ public class JavaController {
 
     });
 
-    return new ResponseEntity<SomeRandomObject>(
+    ResponseEntity<SomeRandomObject> response = new ResponseEntity<>(
         SomeRandomObject.builder()
+            .timestamp(LocalDateTime.now().toString())
             .headers(headers)
             .params(params)
             .filenames(files.values()
@@ -91,6 +103,8 @@ public class JavaController {
                 .map(MultipartFile::getOriginalFilename)
                 .toArray(String[]::new))
             .build(), HttpStatus.OK);
+    responses.add(response);
+    return response;
   }
 
 
@@ -110,9 +124,12 @@ public class JavaController {
     } catch (Exception e) {
       e.printStackTrace();
     }
-    return ok()
+    ResponseEntity<Resource> response = ok()
         .header(CONTENT_DISPOSITION_LABEL, String.format(CONTENT_DISPOSITION_VALUE, "attachment", "fileToDownload.txt"))
+        .header("timestamp", LocalDateTime.now().toString())
         .body(resource);
+    responses.add(response);
+    return response;
   }
 
 
@@ -136,8 +153,17 @@ public class JavaController {
     } catch (Exception e) {
       e.printStackTrace();
     }
-    return ok()
-        .header(CONTENT_DISPOSITION_LABEL, String.format(CONTENT_DISPOSITION_VALUE, "attachment", "fileToDownload.txt"))
+    ResponseEntity<Resource> response = ok()
+        .header(CONTENT_DISPOSITION_LABEL, String.format(CONTENT_DISPOSITION_VALUE, "response", "fileToDownload.txt"))
+        .header("timestamp", LocalDateTime.now().toString())
         .body(resource);
+    responses.add(response);
+    return response;
+  }
+
+  @GetMapping("/log")
+  public ResponseEntity<List<?>> log() {
+    System.out.println("\nLog Requested\n");
+    return ok().body(this.responses);
   }
 }

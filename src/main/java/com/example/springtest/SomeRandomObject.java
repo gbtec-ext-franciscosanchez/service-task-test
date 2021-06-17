@@ -13,4 +13,5 @@ public class SomeRandomObject {
   private Map<String, String> headers;
   private Object body;
   private String[] filenames;
+  private String timestamp;
 }
