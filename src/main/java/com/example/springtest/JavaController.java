@@ -219,8 +219,8 @@ public class JavaController {
     return response;
   }
 
-  @GetMapping("/log")
-  public ResponseEntity<List<?>> log() {
+  @GetMapping("/logs")
+  public ResponseEntity<List<?>> logs() {
     System.out.println("\nLog Requested\n");
     return ok().body(this.responses);
   }

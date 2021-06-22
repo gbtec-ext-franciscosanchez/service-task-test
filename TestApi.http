@@ -63,7 +63,7 @@ Content-Disposition: form-data; name="DocumentUpload"; filename="fileToUpload.tx
 ###
 
 
-GET http://localhost:8888/log
+GET http://localhost:8888/logs
 
 ###
 
