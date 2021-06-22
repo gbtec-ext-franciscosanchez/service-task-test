@@ -16,8 +16,10 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -51,6 +53,40 @@ public class JavaController {
       @RequestParam(required = false) Map<String, String> params,
       @RequestBody(required = false) Object body) {
     System.out.println("\nPost : ");
+    System.out.println("params : " + params);
+    System.out.println("headers : " + headers);
+    System.out.println("body : " + body);
+    ResponseEntity<SomeRandomObject> response = new ResponseEntity<>(
+        SomeRandomObject.builder()
+            .timestamp(LocalDateTime.now().toString()).headers(headers).params(params).body(body).build(),
+        HttpStatus.OK);
+    responses.add(response);
+    return response;
+  }
+
+  @PutMapping("/api")
+  public ResponseEntity<SomeRandomObject> put(
+      @RequestHeader Map<String, String> headers,
+      @RequestParam(required = false) Map<String, String> params,
+      @RequestBody(required = false) Object body) {
+    System.out.println("\nPut : ");
+    System.out.println("params : " + params);
+    System.out.println("headers : " + headers);
+    System.out.println("body : " + body);
+    ResponseEntity<SomeRandomObject> response = new ResponseEntity<>(
+        SomeRandomObject.builder()
+            .timestamp(LocalDateTime.now().toString()).headers(headers).params(params).body(body).build(),
+        HttpStatus.OK);
+    responses.add(response);
+    return response;
+  }
+
+  @DeleteMapping("/api")
+  public ResponseEntity<SomeRandomObject> delete(
+      @RequestHeader Map<String, String> headers,
+      @RequestParam(required = false) Map<String, String> params,
+      @RequestBody(required = false) Object body) {
+    System.out.println("\nDelete : ");
     System.out.println("params : " + params);
     System.out.println("headers : " + headers);
     System.out.println("body : " + body);
@@ -158,6 +194,28 @@ public class JavaController {
         .header("timestamp", LocalDateTime.now().toString())
         .body(resource);
     responses.add(response);
+    return response;
+  }
+
+  @GetMapping("/delay")
+  public ResponseEntity<SomeRandomObject> delay(
+      @RequestHeader Map<String, String> headers,
+      @RequestParam(required = false, defaultValue = "10000") String delay,
+      @RequestParam(required = false) Map<String, String> params) throws InterruptedException {
+    System.out.println("\nGet : ");
+    System.out.println("params : " + params);
+    System.out.println("headers : " + headers);
+    ResponseEntity<SomeRandomObject> response = new ResponseEntity<>(
+        SomeRandomObject.builder()
+            .timestamp(LocalDateTime.now().toString()).headers(headers).params(params).build(), HttpStatus.OK);
+    responses.add(response);
+    Integer sleep = null;
+    try {
+      sleep = Integer.parseInt(delay);
+    } catch (Exception e) {
+      sleep = 10000;
+    }
+    Thread.sleep(sleep);
     return response;
   }
 

@@ -13,6 +13,27 @@ Content-Type: application/json
 
 ###
 
+PUT http://localhost:8888/api
+Content-Type: application/json
+
+{
+  "id": 199,
+  "name": "test"
+}
+
+###
+
+
+DELETE http://localhost:8888/api
+Content-Type: application/json
+
+{
+  "id": 199,
+  "name": "test"
+}
+
+###
+
 
 POST http://localhost:8888/upload
 Content-Type: multipart/form-data; boundary=WebAppBoundary
@@ -38,5 +59,15 @@ Content-Disposition: form-data; name="DocumentUpload"; filename="fileToUpload.tx
 
 < fileToUpload.txt
 --WebAppBoundary--
+
+###
+
+
+GET http://localhost:8888/log
+
+###
+
+
+GET http://localhost:8888/delay?delay=5000
 
 ###
