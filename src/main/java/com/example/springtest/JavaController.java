@@ -31,7 +31,7 @@ public class JavaController {
   private static final String CONTENT_DISPOSITION_LABEL = "Content-Disposition";
   private static final String CONTENT_DISPOSITION_VALUE = "form-data; name=\"%s\"; filename=\"%s\"";
 
-  private final List<ResponseEntity<?>> responses = new ArrayList<ResponseEntity<?>>();
+  private final List<ResponseEntity<SomeRandomObject>> responses = new ArrayList<ResponseEntity<SomeRandomObject>>();
 
   @GetMapping("/api")
   public ResponseEntity<SomeRandomObject> get(
@@ -42,7 +42,8 @@ public class JavaController {
     System.out.println("headers : " + headers);
     ResponseEntity<SomeRandomObject> response = new ResponseEntity<>(
         SomeRandomObject.builder()
-            .timestamp(LocalDateTime.now().toString()).headers(headers).params(params).build(), HttpStatus.OK);
+            .timestamp(LocalDateTime.now().toString()).headers(headers).params(params).endpoint("api").method("get")
+            .build(), HttpStatus.OK);
     responses.add(response);
     return response;
   }
@@ -58,7 +59,8 @@ public class JavaController {
     System.out.println("body : " + body);
     ResponseEntity<SomeRandomObject> response = new ResponseEntity<>(
         SomeRandomObject.builder()
-            .timestamp(LocalDateTime.now().toString()).headers(headers).params(params).body(body).build(),
+            .timestamp(LocalDateTime.now().toString()).headers(headers).params(params).endpoint("api").method("post")
+            .body(body).build(),
         HttpStatus.OK);
     responses.add(response);
     return response;
@@ -75,7 +77,8 @@ public class JavaController {
     System.out.println("body : " + body);
     ResponseEntity<SomeRandomObject> response = new ResponseEntity<>(
         SomeRandomObject.builder()
-            .timestamp(LocalDateTime.now().toString()).headers(headers).params(params).body(body).build(),
+            .timestamp(LocalDateTime.now().toString()).headers(headers).params(params).body(body).endpoint("api")
+            .method("put").build(),
         HttpStatus.OK);
     responses.add(response);
     return response;
@@ -92,7 +95,8 @@ public class JavaController {
     System.out.println("body : " + body);
     ResponseEntity<SomeRandomObject> response = new ResponseEntity<>(
         SomeRandomObject.builder()
-            .timestamp(LocalDateTime.now().toString()).headers(headers).params(params).body(body).build(),
+            .timestamp(LocalDateTime.now().toString()).headers(headers).params(params).body(body).endpoint("api")
+            .method("delete").build(),
         HttpStatus.OK);
     responses.add(response);
     return response;
@@ -130,7 +134,7 @@ public class JavaController {
     });
 
     ResponseEntity<SomeRandomObject> response = new ResponseEntity<>(
-        SomeRandomObject.builder()
+        SomeRandomObject.builder().endpoint("upload").method("post")
             .timestamp(LocalDateTime.now().toString())
             .headers(headers)
             .params(params)
@@ -164,7 +168,9 @@ public class JavaController {
         .header(CONTENT_DISPOSITION_LABEL, String.format(CONTENT_DISPOSITION_VALUE, "attachment", "fileToDownload.txt"))
         .header("timestamp", LocalDateTime.now().toString())
         .body(resource);
-    responses.add(response);
+    responses.add(ok().body(
+        SomeRandomObject.builder().endpoint("download").method("get").timestamp(LocalDateTime.now().toString())
+            .headers(headers).params(params).build()));
     return response;
   }
 
@@ -193,7 +199,9 @@ public class JavaController {
         .header(CONTENT_DISPOSITION_LABEL, String.format(CONTENT_DISPOSITION_VALUE, "response", "fileToDownload.txt"))
         .header("timestamp", LocalDateTime.now().toString())
         .body(resource);
-    responses.add(response);
+    responses.add(ok().body(
+        SomeRandomObject.builder().endpoint("transform").method("post").timestamp(LocalDateTime.now().toString())
+            .headers(headers).params(params).build()));
     return response;
   }
 
@@ -207,7 +215,8 @@ public class JavaController {
     System.out.println("headers : " + headers);
     ResponseEntity<SomeRandomObject> response = new ResponseEntity<>(
         SomeRandomObject.builder()
-            .timestamp(LocalDateTime.now().toString()).headers(headers).params(params).build(), HttpStatus.OK);
+            .timestamp(LocalDateTime.now().toString()).headers(headers).params(params).endpoint("delay").method("get")
+            .build(), HttpStatus.OK);
     responses.add(response);
     Integer sleep = null;
     try {
@@ -220,7 +229,7 @@ public class JavaController {
   }
 
   @GetMapping("/logs")
-  public ResponseEntity<List<?>> logs() {
+  public ResponseEntity<List<ResponseEntity<SomeRandomObject>>> logs() {
     System.out.println("\nLog Requested\n");
     return ok().body(this.responses);
   }
