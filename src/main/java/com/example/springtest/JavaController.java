@@ -1,7 +1,12 @@
 package com.example.springtest;
 
-import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
-import static org.springframework.http.ResponseEntity.ok;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -11,19 +16,9 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
+
+import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
+import static org.springframework.http.ResponseEntity.ok;
 
 @Controller()
 public class JavaController {
@@ -225,6 +220,21 @@ public class JavaController {
       sleep = 10000;
     }
     Thread.sleep(sleep);
+    return response;
+  }
+
+  @GetMapping("/501")
+  public ResponseEntity<SomeRandomObject> five_o_one(
+          @RequestHeader Map<String, String> headers,
+          @RequestParam(required = false) Map<String, String> params) {
+    System.out.println("\nGet : ");
+    System.out.println("params : " + params);
+    System.out.println("headers : " + headers);
+    ResponseEntity<SomeRandomObject> response = new ResponseEntity<>(
+            SomeRandomObject.builder()
+                    .timestamp(LocalDateTime.now().toString()).headers(headers).params(params).endpoint("delay").method("get")
+                    .build(), HttpStatus.NOT_IMPLEMENTED);
+    responses.add(response);
     return response;
   }
 
